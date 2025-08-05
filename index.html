@@ -1,212 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Unary Operator Quiz - C</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f9ff;
-      text-align: center;
-      padding: 20px;
-    }
-    .container {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    h2 {
-      color: #007acc;
-    }
-    .question {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-    .options {
-      text-align: left;
-      margin-bottom: 20px;
-    }
-    .options label {
-      display: block;
-      margin: 8px 0;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      border: none;
-      background-color: #007acc;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #005fa3;
-    }
-    .input-section {
-      margin-bottom: 20px;
-    }
-    .summary {
-      text-align: left;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Data Science MCQ Chatbot</title>
+    <style>
+        body {
+            background-color: #e0f7fa;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .question {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+            text-align: left;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #00796b;
+            color: white;
+        }
+        #summary {
+            display: none;
+            text-align: left;
+        }
+        .summary-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+        }
+        .correct { color: green; }
+        .wrong { color: red; }
+    </style>
 </head>
 <body>
-
-  <div class="container" id="start-section">
-    <h2>Unary Operator Quiz - C</h2>
-    <div class="input-section">
-      <label>Student Name: <input type="text" id="studentName" /></label><br><br>
-      <label>Year: <input type="text" id="studentYear" /></label>
+<div class="container">
+    <div id="userInput">
+        <h2>Welcome to Data Science MCQ Quiz</h2>
+        <p>Enter your name and class:</p>
+        <input type="text" id="studentName" placeholder="Your Name"><br><br>
+        <input type="text" id="studentClass" placeholder="Your Class"><br><br>
+        <button class="btn" onclick="startQuiz()">Start Quiz</button>
     </div>
-    <button onclick="startQuiz()">Start Quiz</button>
-  </div>
 
-  <div class="container" id="quiz-section" style="display: none;">
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionsList"></div>
-    <button onclick="prevQuestion()">Previous</button>
-    <button onclick="nextQuestion()">Next</button>
-  </div>
+    <div id="quizBox" style="display:none;">
+        <div class="question" id="questionText"></div>
+        <div class="options" id="optionList"></div>
+        <button class="btn" onclick="prevQuestion()">Previous</button>
+        <button class="btn" onclick="nextQuestion()">Next</button>
+    </div>
 
-  <div class="container" id="result-section" style="display: none;">
-    <h2>Quiz Report</h2>
-    <div id="report"></div>
-  </div>
+    <div id="summary">
+        <h2>Quiz Summary</h2>
+        <p id="summaryHeader"></p>
+        <div id="summaryDetails"></div>
+    </div>
+</div>
 
-  <script>
-    const questions = [
-      {
-        question: "1. What is the output of: int x = 5; printf(\"%d\", ++x);",
-        options: ["4", "5", "6", "Error"],
-        answer: "6"
-      },
-      {
-        question: "2. What is the output of: int x = 5; printf(\"%d\", x++);",
-        options: ["4", "5", "6", "Error"],
-        answer: "5"
-      },
-      {
-        question: "3. Unary minus of -(-5) gives?",
-        options: ["-5", "5", "0", "Error"],
-        answer: "5"
-      },
-      {
-        question: "4. What is the output of: int x=10; printf(\"%d\", -x);",
-        options: ["10", "-10", "0", "Error"],
-        answer: "-10"
-      },
-      {
-        question: "5. Which of the following is NOT a unary operator in C?",
-        options: ["++", "--", "-", "*"],
-        answer: "*"
-      },
-      {
-        question: "6. What does ++i mean?",
-        options: ["Increment after use", "Decrement before use", "Increment before use", "None"],
-        answer: "Increment before use"
-      },
-      {
-        question: "7. What does i-- mean?",
-        options: ["Increment before use", "Decrement after use", "Decrement before use", "None"],
-        answer: "Decrement after use"
-      },
-      {
-        question: "8. Which of these has higher precedence?",
-        options: ["++", "+", "*", "="],
-        answer: "++"
-      },
-      {
-        question: "9. Which unary operator is used to get the address of variable?",
-        options: ["*", "&", "@", "#"],
-        answer: "&"
-      },
-      {
-        question: "10. What is the result of: int x = -3; x = -x;",
-        options: ["3", "-3", "0", "Error"],
-        answer: "3"
-      },
-    ];
+<script>
+const questions = [
+    {q: "What is a major benefit of Data Science?", options: ["Data Entry", "Pattern Recognition", "Manual Calculation", "File Deletion"], answer: 1},
+    {q: "Which of the following is NOT a facet of data?", options: ["Volume", "Velocity", "Variety", "Vision"], answer: 3},
+    {q: "First step in Data Science Process?", options: ["Build the Model", "Present Results", "Define Research Goals", "EDA"], answer: 2},
+    {q: "What does EDA stand for?", options: ["Extended Data Analysis", "Exploratory Data Analysis", "External Data Access", "Efficient Data Arrangement"], answer: 1},
+    {q: "What is the purpose of data preparation?", options: ["Delete Unwanted Data", "Clean and Format Data", "Print Data", "Ignore Null Values"], answer: 1},
+    {q: "Which is used to retrieve data?", options: ["Data Mining", "Data Cleaning", "Data Query", "Data Deletion"], answer: 2},
+    {q: "What comes after retrieving data?", options: ["Model Building", "Defining Goals", "Exploring Data", "Reporting"], answer: 2},
+    {q: "Building the model involves:", options: ["No analysis", "Using algorithms", "Ignoring data", "Just reporting"], answer: 1},
+    {q: "Final step in DS process?", options: ["Cleaning", "Modeling", "Presentation", "EDA"], answer: 2},
+    {q: "Data Mining refers to:", options: ["Deleting Files", "Extracting Patterns", "Painting Charts", "Writing Reports"], answer: 1},
+    {q: "Data Warehousing is for:", options: ["Selling Data", "Cleaning Data", "Storing Large Volumes", "None"], answer: 2},
+    {q: "Mean is an example of:", options: ["Shape", "Size", "Statistical Measure", "Volume"], answer: 2},
+    {q: "Which one is not a central tendency measure?", options: ["Median", "Mode", "Mean", "Mass"], answer: 3},
+    {q: "Standard Deviation shows:", options: ["Data Spread", "Data Speed", "Data Shape", "Data Color"], answer: 0},
+    {q: "Which is not a benefit of DS?", options: ["Predict Outcomes", "Make Decisions", "Waste Resources", "Find Insights"], answer: 2},
+    {q: "During EDA, we usually:", options: ["Visualize Data", "Delete Data", "Encrypt Files", "Hide Records"], answer: 0},
+    {q: "Which of these is NOT in DS Process?", options: ["Define Goals", "Cook Food", "Build Model", "Retrieve Data"], answer: 1},
+    {q: "Data Cleaning involves:", options: ["Formatting", "Replacing nulls", "Correcting data", "All of these"], answer: 3},
+    {q: "Applications of DS include:", options: ["Weather Prediction", "Baking", "Farming", "None"], answer: 0},
+    {q: "What does model output give?", options: ["Garbage", "Prediction", "Noise", "Errors"], answer: 1},
+];
 
-    let currentQuestion = 0;
-    let userAnswers = new Array(questions.length).fill("");
-    let studentName = "";
-    let studentYear = "";
+let currentQuestion = 0;
+let student = { name: '', class: '' };
+let answers = new Array(questions.length).fill(null);
 
-    function startQuiz() {
-      studentName = document.getElementById("studentName").value;
-      studentYear = document.getElementById("studentYear").value;
-      if (studentName === "" || studentYear === "") {
-        alert("Please enter both name and year.");
+function startQuiz() {
+    student.name = document.getElementById('studentName').value;
+    student.class = document.getElementById('studentClass').value;
+
+    if (!student.name.trim() || !student.class.trim()) {
+        alert("Please enter both name and class.");
         return;
-      }
-      document.getElementById("start-section").style.display = "none";
-      document.getElementById("quiz-section").style.display = "block";
-      showQuestion();
     }
 
-    function showQuestion() {
-      const q = questions[currentQuestion];
-      document.getElementById("questionText").innerText = q.question;
-      const optionsDiv = document.getElementById("optionsList");
-      optionsDiv.innerHTML = "";
-      q.options.forEach((opt, i) => {
-        const checked = userAnswers[currentQuestion] === opt ? "checked" : "";
-        optionsDiv.innerHTML += `
-          <label>
-            <input type="radio" name="option" value="${opt}" ${checked}
-            onchange="saveAnswer('${opt}')"> ${opt}
-          </label>`;
-      });
-    }
+    document.getElementById('userInput').style.display = 'none';
+    document.getElementById('quizBox').style.display = 'block';
+    showQuestion();
+}
 
-    function saveAnswer(answer) {
-      userAnswers[currentQuestion] = answer;
-    }
+function showQuestion() {
+    const q = questions[currentQuestion];
+    document.getElementById('questionText').textContent = `Q${currentQuestion + 1}: ${q.q}`;
 
-    function nextQuestion() {
-      if (currentQuestion < questions.length - 1) {
+    const optionList = document.getElementById('optionList');
+    optionList.innerHTML = '';
+    q.options.forEach((opt, i) => {
+        const checked = answers[currentQuestion] === i ? 'checked' : '';
+        optionList.innerHTML += `<label><input type="radio" name="option" value="${i}" ${checked}> ${opt}</label>`;
+    });
+}
+
+function nextQuestion() {
+    const selected = document.querySelector('input[name="option"]:checked');
+    if (selected) answers[currentQuestion] = parseInt(selected.value);
+
+    if (currentQuestion < questions.length - 1) {
         currentQuestion++;
         showQuestion();
-      } else {
+    } else {
         showSummary();
-      }
     }
+}
 
-    function prevQuestion() {
-      if (currentQuestion > 0) {
+function prevQuestion() {
+    const selected = document.querySelector('input[name="option"]:checked');
+    if (selected) answers[currentQuestion] = parseInt(selected.value);
+
+    if (currentQuestion > 0) {
         currentQuestion--;
         showQuestion();
-      }
     }
+}
 
-    function showSummary() {
-      document.getElementById("quiz-section").style.display = "none";
-      document.getElementById("result-section").style.display = "block";
+function showSummary() {
+    document.getElementById('quizBox').style.display = 'none';
+    document.getElementById('summary').style.display = 'block';
+    document.getElementById('summaryHeader').innerHTML = 
+        `<strong>${student.name}</strong> of <strong>${student.class}</strong>, here is your performance:`;
 
-      let score = 0;
-      let report = `<p><strong>Name:</strong> ${studentName}</p>
-                    <p><strong>Year:</strong> ${studentYear}</p>
-                    <hr><ol>`;
+    const summaryDiv = document.getElementById('summaryDetails');
+    summaryDiv.innerHTML = '';
+    let score = 0;
 
-      questions.forEach((q, index) => {
-        const correct = q.answer === userAnswers[index];
+    questions.forEach((q, i) => {
+        const userAns = answers[i];
+        const correct = userAns === q.answer;
         if (correct) score++;
-        report += `<li>
-                    ${q.question}<br>
-                    <strong>Your Answer:</strong> ${userAnswers[index] || "Not answered"}<br>
-                    <strong>Correct Answer:</strong> ${q.answer}<br>
-                    <strong>${correct ? "✅ Correct" : "❌ Wrong"}</strong>
-                  </li><br>`;
-      });
 
-      report += `</ol><h3>Total Score: ${score} / ${questions.length}</h3>`;
-      document.getElementById("report").innerHTML = report;
-    }
-  </script>
+        summaryDiv.innerHTML += `
+            <div class="summary-item">
+                <strong>Q${i + 1}: ${q.q}</strong><br>
+                Your answer: <span class="${correct ? 'correct' : 'wrong'}">
+                    ${userAns !== null ? q.options[userAns] : 'Not Answered'}
+                </span><br>
+                Correct answer: <strong>${q.options[q.answer]}</strong><br>
+                Result: <strong class="${correct ? 'correct' : 'wrong'}">${correct ? 'Correct' : 'Incorrect'}</strong>
+            </div>`;
+    });
 
+    summaryDiv.innerHTML = `<h3>Final Score: ${score} / ${questions.length}</h3>` + summaryDiv.innerHTML;
+}
+</script>
 </body>
 </html>
